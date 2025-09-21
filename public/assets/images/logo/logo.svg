@@ -1,0 +1,17 @@
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="30" cy="30" r="25" fill="#8B0000"/>
+  
+  <!-- Plus sign in center -->
+  <g transform="translate(30, 30)">
+    <!-- Vertical line -->
+    <rect x="-2" y="-10" width="4" height="20" fill="white"/>
+    <!-- Horizontal line -->
+    <rect x="-10" y="-2" width="20" height="4" fill="white"/>
+  </g>
+  
+  <!-- Company name -->
+  <text x="70" y="20" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#8B0000">DIVINE</text>
+  <text x="70" y="40" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#8B0000">ELEGANT</text>
+  <text x="70" y="50" font-family="Arial, sans-serif" font-size="8" fill="#666">Spiritual Jewelry & Mala</text>
+</svg>

@@ -8,9 +8,12 @@ export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async (params = {}, { rejectWithValue }) => {
     try {
+      console.log('Fetching products with params:', params);
       const response = await axios.get(`${API_URL}/products`, { params });
+      console.log('Products fetched:', response.data);
       return response.data;
     } catch (error) {
+      console.error('Error fetching products:', error);
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch products');
     }
   }

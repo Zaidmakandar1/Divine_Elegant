@@ -48,6 +48,10 @@ router.get('/products', async (req, res) => {
 
 router.post('/products', upload.array('images', 10), async (req, res) => {
   try {
+    console.log('Product creation request received');
+    console.log('Request body:', req.body);
+    console.log('Request files:', req.files);
+    
     // Extract product data from form fields
     const {
       name,
@@ -66,11 +70,16 @@ router.post('/products', upload.array('images', 10), async (req, res) => {
     try {
       parsedVariants = typeof variants === 'string' ? JSON.parse(variants) : variants;
     } catch (e) {
+      console.error('Variants parsing error:', e);
       return res.status(400).json({ message: 'Invalid variants format' });
     }
 
     // Process uploaded images
-    const imageUrls = req.files ? req.files.map(file => `/assets/images/products/${file.filename}`) : [];
+    const imageUrls = req.files && req.files.length > 0 
+      ? req.files.map(file => `/assets/images/products/${file.filename}`) 
+      : ['https://images.pexels.com/photos/1191710/pexels-photo-1191710.jpeg?auto=compress&cs=tinysrgb&w=400'];
+
+    console.log('Image URLs:', imageUrls);
 
     // Create product object
     const productData = {
@@ -86,8 +95,11 @@ router.post('/products', upload.array('images', 10), async (req, res) => {
       images: imageUrls
     };
 
+    console.log('Product data to save:', productData);
+
     const product = new Product(productData);
     const savedProduct = await product.save();
+    console.log('Product saved successfully:', savedProduct._id);
     res.status(201).json(savedProduct);
   } catch (error) {
     console.error('Product creation error:', error);

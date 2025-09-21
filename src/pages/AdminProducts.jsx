@@ -28,6 +28,11 @@ const AdminProducts = () => {
     fetchProducts();
   }, [user, navigate]);
 
+  // Refresh products when component mounts or when returning from AddProduct
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   const fetchProducts = async () => {
     try {
       const token = localStorage.getItem('token');

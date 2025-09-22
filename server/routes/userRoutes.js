@@ -10,15 +10,16 @@ const JWT_SECRET = process.env.JWT_SECRET || 'divine-elegant-secret-key';
 router.post('/register', async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    const normalizedEmail = String(email || '').toLowerCase().trim();
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists with this email' });
     }
 
     // Create new user
-    const user = new User({ name, email, password });
+    const user = new User({ name, email: normalizedEmail, password });
     await user.save();
 
     // Generate JWT token
@@ -42,9 +43,10 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = String(email || '').toLowerCase().trim();
 
     // Find user
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }

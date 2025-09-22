@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import User from './models/User.js';
 import Product from './models/Product.js';
+import logger from './logger.js';
 
 dotenv.config();
 
@@ -228,25 +229,25 @@ const products = [
 
 const seedDatabase = async () => {
   try {
-    await mongoose.connect(MONGODB_URI);
-    console.log('Connected to MongoDB');
+  await mongoose.connect(MONGODB_URI);
+  logger.debug('Connected to MongoDB');
 
     // Insert products only (skip users for now due to permissions)
     try {
-      const createdProducts = await Product.insertMany(products);
-      console.log('Created products:', createdProducts.length);
+  const createdProducts = await Product.insertMany(products);
+  logger.debug('Created products:', createdProducts.length);
     } catch (insertError) {
       if (insertError.code === 11000) {
-        console.log('Products already exist, skipping insertion');
+  logger.debug('Products already exist, skipping insertion');
       } else {
         throw insertError;
       }
     }
 
-    console.log('Database seeded successfully!');
+  logger.debug('Database seeded successfully!');
     process.exit(0);
   } catch (error) {
-    console.error('Error seeding database:', error);
+  logger.error('Error seeding database:', error);
     process.exit(1);
   }
 };

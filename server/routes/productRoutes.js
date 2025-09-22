@@ -1,12 +1,13 @@
 import express from 'express';
 import Product from '../models/Product.js';
+import logger from '../logger.js';
 
 const router = express.Router();
 
 // Get all products
 router.get('/', async (req, res) => {
   try {
-    console.log('Fetching products with query:', req.query);
+  logger.debug('Fetching products with query:', req.query);
     const { category, featured } = req.query;
     let query = {};
     
@@ -17,12 +18,12 @@ router.get('/', async (req, res) => {
       query.featured = true;
     }
 
-    console.log('MongoDB query:', query);
+  logger.debug('MongoDB query:', query);
     const products = await Product.find(query).sort({ createdAt: -1 });
-    console.log(`Found ${products.length} products`);
+  logger.debug(`Found ${products.length} products`);
     res.json(products);
   } catch (error) {
-    console.error('Error fetching products:', error);
+  logger.error('Error fetching products:', error);
     res.status(500).json({ message: error.message });
   }
 });

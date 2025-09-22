@@ -4,6 +4,7 @@ import Order from '../models/Order.js';
 import User from '../models/User.js';
 import { authenticateToken, requireAdmin } from '../middleware/auth.js';
 import { upload } from '../middleware/upload.js';
+import logger from '../logger.js';
 
 const router = express.Router();
 
@@ -48,9 +49,9 @@ router.get('/products', async (req, res) => {
 
 router.post('/products', upload.array('images', 10), async (req, res) => {
   try {
-    console.log('Product creation request received');
-    console.log('Request body:', req.body);
-    console.log('Request files:', req.files);
+  logger.debug('Product creation request received');
+  logger.debug('Request body:', req.body);
+  logger.debug('Request files:', req.files);
     
     // Extract product data from form fields
     const {
@@ -70,7 +71,7 @@ router.post('/products', upload.array('images', 10), async (req, res) => {
     try {
       parsedVariants = typeof variants === 'string' ? JSON.parse(variants) : variants;
     } catch (e) {
-      console.error('Variants parsing error:', e);
+      logger.error('Variants parsing error:', e);
       return res.status(400).json({ message: 'Invalid variants format' });
     }
 
@@ -79,7 +80,7 @@ router.post('/products', upload.array('images', 10), async (req, res) => {
       ? req.files.map(file => `/assets/images/products/${file.filename}`) 
       : ['https://images.pexels.com/photos/1191710/pexels-photo-1191710.jpeg?auto=compress&cs=tinysrgb&w=400'];
 
-    console.log('Image URLs:', imageUrls);
+  logger.debug('Image URLs:', imageUrls);
 
     // Create product object
     const productData = {
@@ -95,14 +96,14 @@ router.post('/products', upload.array('images', 10), async (req, res) => {
       images: imageUrls
     };
 
-    console.log('Product data to save:', productData);
+  logger.debug('Product data to save:', productData);
 
     const product = new Product(productData);
     const savedProduct = await product.save();
-    console.log('Product saved successfully:', savedProduct._id);
+  logger.debug('Product saved successfully:', savedProduct._id);
     res.status(201).json(savedProduct);
   } catch (error) {
-    console.error('Product creation error:', error);
+  logger.error('Product creation error:', error);
     res.status(400).json({ message: error.message });
   }
 });
@@ -124,9 +125,9 @@ router.get('/products/:id', async (req, res) => {
 
 router.put('/products/:id', upload.array('images', 10), async (req, res) => {
   try {
-    console.log('Product update request received');
-    console.log('Request body:', req.body);
-    console.log('Request files:', req.files);
+  logger.debug('Product update request received');
+  logger.debug('Request body:', req.body);
+  logger.debug('Request files:', req.files);
     
     // Extract product data from form fields
     const {
@@ -147,7 +148,7 @@ router.put('/products/:id', upload.array('images', 10), async (req, res) => {
     try {
       parsedVariants = typeof variants === 'string' ? JSON.parse(variants) : variants;
     } catch (e) {
-      console.error('Variants parsing error:', e);
+      logger.error('Variants parsing error:', e);
       return res.status(400).json({ message: 'Invalid variants format' });
     }
 
@@ -156,7 +157,7 @@ router.put('/products/:id', upload.array('images', 10), async (req, res) => {
     try {
       parsedExistingImages = typeof existingImages === 'string' ? JSON.parse(existingImages) : existingImages;
     } catch (e) {
-      console.error('Existing images parsing error:', e);
+      logger.error('Existing images parsing error:', e);
     }
 
     // Process new uploaded images
@@ -167,9 +168,9 @@ router.put('/products/:id', upload.array('images', 10), async (req, res) => {
     // Combine existing and new images
     const allImages = [...parsedExistingImages, ...newImageUrls];
 
-    console.log('Existing images:', parsedExistingImages);
-    console.log('New images:', newImageUrls);
-    console.log('All images:', allImages);
+  logger.debug('Existing images:', parsedExistingImages);
+  logger.debug('New images:', newImageUrls);
+  logger.debug('All images:', allImages);
 
     // Create product update object
     const productData = {
@@ -185,7 +186,7 @@ router.put('/products/:id', upload.array('images', 10), async (req, res) => {
       images: allImages
     };
 
-    console.log('Product data to update:', productData);
+  logger.debug('Product data to update:', productData);
 
     const product = await Product.findByIdAndUpdate(
       req.params.id,
@@ -197,10 +198,10 @@ router.put('/products/:id', upload.array('images', 10), async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
     
-    console.log('Product updated successfully:', product._id);
+  logger.debug('Product updated successfully:', product._id);
     res.json(product);
   } catch (error) {
-    console.error('Product update error:', error);
+  logger.error('Product update error:', error);
     res.status(400).json({ message: error.message });
   }
 });

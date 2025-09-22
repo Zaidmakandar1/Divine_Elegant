@@ -1,12 +1,15 @@
 import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { cloudinaryEnabled } from '../services/cloudinary.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configure multer for file uploads
-const storage = multer.diskStorage({
+// - Memory storage if Cloudinary is enabled (we'll upload buffers)
+// - Disk storage fallback otherwise
+const storage = cloudinaryEnabled ? multer.memoryStorage() : multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, path.join(__dirname, '../../public/assets/images/products/'));
   },

@@ -14,6 +14,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminProducts from './pages/AdminProducts';
 import AdminOrders from './pages/AdminOrders';
 import AddProduct from './pages/AddProduct';
+import EditProduct from './pages/EditProduct';
 import './App.css';
 
 function App() {
@@ -34,7 +35,7 @@ function App() {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/products/new" element={<AddProduct />} />
-            <Route path="/admin/products/edit/:id" element={<div>Edit Product Form - Coming Soon</div>} />
+            <Route path="/admin/products/edit/:id" element={<EditProduct />} />
             <Route path="/admin/orders" element={<AdminOrders />} />
             <Route path="/admin/orders/:id" element={<div>Order Details - Coming Soon</div>} />
           </Routes>

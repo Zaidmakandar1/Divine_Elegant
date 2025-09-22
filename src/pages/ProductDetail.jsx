@@ -26,6 +26,7 @@ const ProductDetail = () => {
   useEffect(() => {
     if (product && product.variants.length > 0) {
       setSelectedVariant(product.variants[0]);
+      setSelectedImageIndex(0);
     }
   }, [product]);
 
@@ -165,6 +166,10 @@ const ProductDetail = () => {
                     onClick={() => {
                       setSelectedVariant(variant);
                       setQuantity(1);
+                      if (product.images && product.images.length > 0) {
+                        const variantIndex = Math.max(0, Math.min(index, product.images.length - 1));
+                        setSelectedImageIndex(variantIndex);
+                      }
                     }}
                     className={`px-4 py-2 rounded-lg border-2 font-medium transition-colors duration-200 ${
                       selectedVariant?.size === variant.size

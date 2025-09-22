@@ -107,13 +107,10 @@ router.post('/products', upload.array('images', 10), async (req, res) => {
   }
 });
 
-router.put('/products/:id', async (req, res) => {
+// Get single product
+router.get('/products/:id', async (req, res) => {
   try {
-    const product = await Product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const product = await Product.findById(req.params.id);
     
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
@@ -121,6 +118,89 @@ router.put('/products/:id', async (req, res) => {
     
     res.json(product);
   } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.put('/products/:id', upload.array('images', 10), async (req, res) => {
+  try {
+    console.log('Product update request received');
+    console.log('Request body:', req.body);
+    console.log('Request files:', req.files);
+    
+    // Extract product data from form fields
+    const {
+      name,
+      description,
+      category,
+      material,
+      spiritualBenefits,
+      careInstructions,
+      featured,
+      certification,
+      variants,
+      existingImages
+    } = req.body;
+
+    // Parse variants if it's a string
+    let parsedVariants;
+    try {
+      parsedVariants = typeof variants === 'string' ? JSON.parse(variants) : variants;
+    } catch (e) {
+      console.error('Variants parsing error:', e);
+      return res.status(400).json({ message: 'Invalid variants format' });
+    }
+
+    // Parse existing images if it's a string
+    let parsedExistingImages = [];
+    try {
+      parsedExistingImages = typeof existingImages === 'string' ? JSON.parse(existingImages) : existingImages;
+    } catch (e) {
+      console.error('Existing images parsing error:', e);
+    }
+
+    // Process new uploaded images
+    const newImageUrls = req.files && req.files.length > 0 
+      ? req.files.map(file => `/assets/images/products/${file.filename}`) 
+      : [];
+
+    // Combine existing and new images
+    const allImages = [...parsedExistingImages, ...newImageUrls];
+
+    console.log('Existing images:', parsedExistingImages);
+    console.log('New images:', newImageUrls);
+    console.log('All images:', allImages);
+
+    // Create product update object
+    const productData = {
+      name,
+      description,
+      category,
+      material,
+      spiritualBenefits,
+      careInstructions,
+      featured: featured === 'true',
+      certification,
+      variants: parsedVariants,
+      images: allImages
+    };
+
+    console.log('Product data to update:', productData);
+
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      productData,
+      { new: true, runValidators: true }
+    );
+    
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    
+    console.log('Product updated successfully:', product._id);
+    res.json(product);
+  } catch (error) {
+    console.error('Product update error:', error);
     res.status(400).json({ message: error.message });
   }
 });

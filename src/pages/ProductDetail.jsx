@@ -73,6 +73,16 @@ const ProductDetail = () => {
     { id: 'care', name: 'Care Instructions', icon: <Shield className="h-5 w-5" /> }
   ];
 
+  // Helper to ensure image URL is absolute when backend returns 
+  // relative paths (e.g., /assets/images/products/filename.jpg)
+  const resolveImageUrl = (url) => {
+    if (!url) return url;
+    if (/^https?:\/\//i.test(url)) return url;
+    // Prepend current backend origin if available via env, else same origin
+    const backend = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    return `${backend}${url.startsWith('/') ? '' : '/'}${url}`;
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -81,7 +91,7 @@ const ProductDetail = () => {
           <div className="aspect-square overflow-hidden rounded-xl bg-gray-100">
             <img
               src={product.images && product.images.length > 0 ? 
-                (product.images[selectedImageIndex] || product.images[0]) : 
+                resolveImageUrl(product.images[selectedImageIndex] || product.images[0]) : 
                 'https://images.pexels.com/photos/1191710/pexels-photo-1191710.jpeg?auto=compress&cs=tinysrgb&w=600'}
               alt={product.name}
               className="w-full h-full object-cover"
@@ -104,7 +114,7 @@ const ProductDetail = () => {
                   }`}
                 >
                   <img
-                    src={image}
+                    src={resolveImageUrl(image)}
                     alt={`${product.name} ${index + 1}`}
                     className="w-full h-full object-cover"
                     onError={(e) => {

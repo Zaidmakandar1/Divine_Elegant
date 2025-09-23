@@ -21,7 +21,8 @@ const __dirname = path.dirname(__filename);
 const rootEnvPath = path.resolve(__dirname, '../.env');
 const serverEnvPath = path.resolve(__dirname, '.env');
 dotenv.config({ path: rootEnvPath });
-dotenv.config({ path: serverEnvPath });
+// Ensure server/.env overrides root .env when both exist
+dotenv.config({ path: serverEnvPath, override: true });
 
 // Debug: show which env files exist and whether a Mongo URI is set
 const rootEnvExists = fs.existsSync(rootEnvPath);
@@ -85,12 +86,11 @@ if (!resolvedKey) {
 
 const resolvedMongoUri = (resolvedKey ? process.env[resolvedKey] : null) || 'mongodb://localhost:27017/divine_elegant';
 
-// If a DB name is provided via env, always use it. Otherwise, if the URI
-// lacks a DB segment, fall back to a sensible default
+// If a DB name is provided via env, use it. Otherwise, do not override.
+// For Atlas/SRV URIs, forcing a dbName can cause bad auth.
 const dbNameFromEnv = process.env.MONGODB_DB_NAME || process.env.MONGO_DB || process.env.DB_NAME;
-const fallbackDbName = dbNameFromEnv || 'divine_elegant';
 const hasDbInUri = /mongodb(\+srv)?:\/\/[^/]+\/[^?]+/i.test(resolvedMongoUri);
-const mongooseOptions = dbNameFromEnv ? { dbName: dbNameFromEnv } : (hasDbInUri ? {} : { dbName: fallbackDbName });
+const mongooseOptions = dbNameFromEnv ? { dbName: dbNameFromEnv } : {};
 
 // Log which URI we are using (masking credentials)
 try {
@@ -99,8 +99,6 @@ try {
     logger.info(`Using MongoDB key: ${resolvedKey || 'default'} → ${masked}`);
     if (dbNameFromEnv) {
       logger.info(`Using env dbName override → options.dbName='${dbNameFromEnv}'`);
-    } else if (!hasDbInUri) {
-      logger.info(`dbName not present in URI → using options.dbName='${fallbackDbName}'`);
     }
   }
 } catch {}

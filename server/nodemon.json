@@ -1,0 +1,23 @@
+{
+  "watch": [
+    "server.js",
+    ".env",
+    "../.env",
+    "routes",
+    "models",
+    "middleware",
+    "services"
+  ],
+  "ext": "js,mjs,cjs,json,env",
+  "ignore": [
+    "node_modules",
+    "public",
+    "../public",
+    "../src"
+  ],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "legacyWatch": true
+}
+

@@ -4,7 +4,6 @@ import Order from '../models/Order.js';
 import User from '../models/User.js';
 import { authenticateToken, requireAdmin } from '../middleware/auth.js';
 import { upload } from '../middleware/upload.js';
-import { cloudinaryEnabled, uploadImageBufferToCloudinary } from '../services/cloudinary.js';
 import logger from '../logger.js';
 
 const router = express.Router();
@@ -77,22 +76,14 @@ router.post('/products', upload.array('images', 10), async (req, res) => {
     }
 
     // Process uploaded images
-    let imageUrls = [];
-    if (req.files && req.files.length > 0) {
-      if (cloudinaryEnabled) {
-        const uploads = await Promise.all(
-          req.files.map(async (file) => {
-            const result = await uploadImageBufferToCloudinary(file.buffer, file.originalname);
-            return result.secure_url;
-          })
-        );
-        imageUrls = uploads;
-      } else {
-        imageUrls = req.files.map(file => `/assets/images/products/${file.filename}`);
-      }
-    } else {
-      imageUrls = ['https://images.pexels.com/photos/1191710/pexels-photo-1191710.jpeg?auto=compress&cs=tinysrgb&w=400'];
-    }
+    // Build an absolute base URL so the frontend (running on a different origin) can load images
+    const configuredBase = process.env.PUBLIC_BASE_URL || process.env.BACKEND_PUBLIC_URL;
+    const runtimeBase = `${req.protocol}://${req.get('host')}`;
+    const baseUrl = (configuredBase && configuredBase.trim().length > 0) ? configuredBase : runtimeBase;
+
+    const imageUrls = req.files && req.files.length > 0 
+      ? req.files.map(file => `${baseUrl}/assets/images/products/${file.filename}`) 
+      : ['https://images.pexels.com/photos/1191710/pexels-photo-1191710.jpeg?auto=compress&cs=tinysrgb&w=400'];
 
   logger.debug('Image URLs:', imageUrls);
 
@@ -175,20 +166,14 @@ router.put('/products/:id', upload.array('images', 10), async (req, res) => {
     }
 
     // Process new uploaded images
-    let newImageUrls = [];
-    if (req.files && req.files.length > 0) {
-      if (cloudinaryEnabled) {
-        const uploads = await Promise.all(
-          req.files.map(async (file) => {
-            const result = await uploadImageBufferToCloudinary(file.buffer, file.originalname);
-            return result.secure_url;
-          })
-        );
-        newImageUrls = uploads;
-      } else {
-        newImageUrls = req.files.map(file => `/assets/images/products/${file.filename}`);
-      }
-    }
+    // Build absolute URLs for any new files uploaded in this request
+    const configuredBase2 = process.env.PUBLIC_BASE_URL || process.env.BACKEND_PUBLIC_URL;
+    const runtimeBase2 = `${req.protocol}://${req.get('host')}`;
+    const baseUrlForUpdate = (configuredBase2 && configuredBase2.trim().length > 0) ? configuredBase2 : runtimeBase2;
+
+    const newImageUrls = req.files && req.files.length > 0 
+      ? req.files.map(file => `${baseUrlForUpdate}/assets/images/products/${file.filename}`) 
+      : [];
 
     // Combine existing and new images
     const allImages = [...parsedExistingImages, ...newImageUrls];

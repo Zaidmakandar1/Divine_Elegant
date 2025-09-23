@@ -19,12 +19,19 @@ const ProductCard = ({ product, onAddToCart }) => {
     }
   };
 
+  const resolveImageUrl = (url) => {
+    if (!url) return url;
+    if (/^https?:\/\//i.test(url)) return url;
+    const backend = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    return `${backend}${url.startsWith('/') ? '' : '/'}${url}`;
+  };
+
   return (
     <div className="group relative bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
       <Link to={`/product/${product._id}`}>
         <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-t-xl bg-gray-200">
           <img
-            src={product.images && product.images.length > 0 ? product.images[0] : 'https://images.pexels.com/photos/1191710/pexels-photo-1191710.jpeg?auto=compress&cs=tinysrgb&w=400'}
+            src={product.images && product.images.length > 0 ? resolveImageUrl(product.images[0]) : 'https://images.pexels.com/photos/1191710/pexels-photo-1191710.jpeg?auto=compress&cs=tinysrgb&w=400'}
             alt={product.name}
             className="h-64 w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
             onError={(e) => {

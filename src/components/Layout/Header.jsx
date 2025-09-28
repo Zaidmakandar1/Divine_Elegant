@@ -126,13 +126,15 @@ const Header = () => {
                       </Link>
                     )}
                     
-                    <Link
-                      to="/orders"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                      onClick={() => setIsUserMenuOpen(false)}
-                    >
-                      My Orders
-                    </Link>
+                    {user.role !== 'admin' && (
+                      <Link
+                        to="/orders"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        My Orders
+                      </Link>
+                    )}
                     
                     <button
                       onClick={handleLogout}

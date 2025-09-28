@@ -11,6 +11,7 @@ import {
   Trash2,
   Plus
 } from 'lucide-react';
+import { getApiUrl } from '../utils/api.js';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const AdminDashboard = () => {
@@ -31,7 +32,7 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/admin/dashboard', {
+      const response = await fetch(`${getApiUrl()}/admin/dashboard`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

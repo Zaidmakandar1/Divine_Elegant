@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Plus, X, Upload } from 'lucide-react';
+import { getApiUrl } from '../utils/api.js';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const AddProduct = () => {
@@ -138,7 +139,7 @@ const AddProduct = () => {
       });
 
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/admin/products', {
+      const response = await fetch('${getApiUrl()}/admin/products', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

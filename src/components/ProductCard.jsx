@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Star, ShoppingCart } from 'lucide-react';
+import { getBaseUrl } from '../utils/api.js';
 
 const ProductCard = ({ product, onAddToCart }) => {
   const { user } = useSelector((state) => state.auth);
@@ -22,7 +23,7 @@ const ProductCard = ({ product, onAddToCart }) => {
   const resolveImageUrl = (url) => {
     if (!url) return url;
     if (/^https?:\/\//i.test(url)) return url;
-    const backend = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    const backend = getBaseUrl();
     return `${backend}${url.startsWith('/') ? '' : '/'}${url}`;
   };
 

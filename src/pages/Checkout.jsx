@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { CreditCard, Smartphone, Truck, CheckCircle } from 'lucide-react';
 import { selectCartItems, selectCartTotal, clearCart } from '../store/slices/cartSlice';
+import { getApiUrl } from '../utils/api.js';
 import axios from 'axios';
 
 const Checkout = () => {
@@ -55,7 +56,7 @@ const Checkout = () => {
         totalPrice: cartTotal
       };
 
-      await axios.post('http://localhost:5000/api/orders', orderData, {
+      await axios.post(`${getApiUrl()}/orders`, orderData, {
         headers: {
           Authorization: `Bearer ${token}`
         }

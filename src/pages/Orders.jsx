@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { getApiUrl } from '../utils/api.js';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const Orders = () => {
@@ -21,7 +22,7 @@ const Orders = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/orders/my-orders', {
+      const response = await fetch(`${getApiUrl()}/orders/my-orders`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

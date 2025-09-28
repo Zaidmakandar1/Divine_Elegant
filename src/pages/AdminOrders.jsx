@@ -10,6 +10,7 @@ import {
   Search,
   Filter
 } from 'lucide-react';
+import { getApiUrl } from '../utils/api.js';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const AdminOrders = () => {
@@ -32,7 +33,7 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/admin/orders', {
+      const response = await fetch('${getApiUrl()}/admin/orders', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -54,7 +55,7 @@ const AdminOrders = () => {
   const handleStatusUpdate = async (orderId, newStatus) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/admin/orders/${orderId}/status`, {
+      const response = await fetch(`${getApiUrl()}/admin/orders/${orderId}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

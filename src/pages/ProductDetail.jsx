@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Minus, Plus, ShoppingCart, Heart, Star, Shield, Sparkles, Package } from 'lucide-react';
 import { fetchProductById } from '../store/slices/productSlice';
 import { addToCart } from '../store/slices/cartSlice';
+import { getBaseUrl } from '../utils/api.js';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const ProductDetail = () => {
@@ -79,7 +80,7 @@ const ProductDetail = () => {
     if (!url) return url;
     if (/^https?:\/\//i.test(url)) return url;
     // Prepend current backend origin if available via env, else same origin
-    const backend = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+    const backend = getBaseUrl();
     return `${backend}${url.startsWith('/') ? '' : '/'}${url}`;
   };
 

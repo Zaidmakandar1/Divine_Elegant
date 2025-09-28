@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Plus, X, Upload } from 'lucide-react';
+import { getApiUrl } from '../utils/api.js';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const EditProduct = () => {
@@ -47,7 +48,7 @@ const EditProduct = () => {
   const fetchProduct = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/admin/products/${id}`, {
+      const response = await fetch(`${getApiUrl()}/admin/products/${id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -203,7 +204,7 @@ const EditProduct = () => {
       });
 
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/admin/products/${id}`, {
+      const response = await fetch(`${getApiUrl()}/admin/products/${id}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`

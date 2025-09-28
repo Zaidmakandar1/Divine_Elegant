@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Minus, Plus, ShoppingCart, Heart, Star, Shield, Sparkles, Package } from 'lucide-react';
 import { fetchProductById } from '../store/slices/productSlice';
 import { addToCart } from '../store/slices/cartSlice';
-import { getBaseUrl } from '../utils/api.js';
+import { resolveImageUrl } from '../utils/api.js';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const ProductDetail = () => {
@@ -74,15 +74,6 @@ const ProductDetail = () => {
     { id: 'care', name: 'Care Instructions', icon: <Shield className="h-5 w-5" /> }
   ];
 
-  // Helper to ensure image URL is absolute when backend returns 
-  // relative paths (e.g., /assets/images/products/filename.jpg)
-  const resolveImageUrl = (url) => {
-    if (!url) return url;
-    if (/^https?:\/\//i.test(url)) return url;
-    // Prepend current backend origin if available via env, else same origin
-    const backend = getBaseUrl();
-    return `${backend}${url.startsWith('/') ? '' : '/'}${url}`;
-  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

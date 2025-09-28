@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Star, ShoppingCart } from 'lucide-react';
-import { getBaseUrl } from '../utils/api.js';
+import { resolveImageUrl } from '../utils/api.js';
 
 const ProductCard = ({ product, onAddToCart }) => {
   const { user } = useSelector((state) => state.auth);
@@ -20,12 +20,6 @@ const ProductCard = ({ product, onAddToCart }) => {
     }
   };
 
-  const resolveImageUrl = (url) => {
-    if (!url) return url;
-    if (/^https?:\/\//i.test(url)) return url;
-    const backend = getBaseUrl();
-    return `${backend}${url.startsWith('/') ? '' : '/'}${url}`;
-  };
 
   return (
     <div className="group relative bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">

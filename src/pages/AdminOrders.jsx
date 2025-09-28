@@ -33,7 +33,7 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('${getApiUrl()}/admin/orders', {
+      const response = await fetch(`${getApiUrl()}/admin/orders`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }

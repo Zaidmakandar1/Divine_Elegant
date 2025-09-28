@@ -139,7 +139,7 @@ const AddProduct = () => {
       });
 
       const token = localStorage.getItem('token');
-      const response = await fetch('${getApiUrl()}/admin/products', {
+      const response = await fetch(`${getApiUrl()}/admin/products`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

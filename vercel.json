@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "VITE_API_BASE_URL=https://divine-elegant-nsf5.onrender.com npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
   "installCommand": "npm install",
